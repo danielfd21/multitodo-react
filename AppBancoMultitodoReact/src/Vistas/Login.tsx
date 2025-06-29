@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
+import BtnMostrar from '../Componentes/Gerencia/Boton/BotoMostrar';
 
 
 
@@ -26,15 +27,12 @@ function Login(){
 
         try{
 
-            const response = await fetch("https://localhost:7103/autentificacion/Acceso", {
-
+                const response = await fetch(`https://localhost:7154/autentificacion/login?cedula=${Usuario}&clave=${Clave}`, {
                 method: "POST",
                 headers: {
 
                     "Content-type":"application/json"
-                },
-
-                body: JSON.stringify({Cedula: Usuario,Clave: Clave})
+                }
                 
 
 
@@ -48,11 +46,12 @@ function Login(){
 
             }
 
-            const data = await response.text();
+            const data = await response.json();
             
-            switch(data){
-                case "Gerencia": return Navigate("http://localhost:5173/Gerencia") ;
-                case "Contabilidad": return Navigate("http://localhost:5173/Contabilidad");
+            localStorage.setItem("token",data.token);
+
+            switch(data.departamento){
+                case "Gerencia": return Navigate("/gerencia") ;
                 default: setError(data);
             }
             
@@ -73,7 +72,7 @@ function Login(){
             <br />
 
             <label htmlFor="">Clave:</label>
-            <input type="text" name="txt_cla"  value={Clave} onChange={e => setClave(e.target.value)}/>
+            <input type="password" name="txt_cla" id="txt_cla" value={Clave} onChange={e => setClave(e.target.value)}/> <BtnMostrar id="txt_cla"/>
             <br />
             <br />
 
